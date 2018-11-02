@@ -33,6 +33,13 @@ Thank you for contributing and thanks to Juice's very own Director of Engineerin
 
 # Releases
 
+## v0.2.0
+
+Added the example available in the CloudFormation template that automatically updates known malicious IP addresses and 
+blocks them.  A Lambda is deployed that runs in conjunction with a Cloudwatch Rule and Event Target to update the IP
+list hourly.  There is a aws_wafregional_ipset for a Whitelist that's defined for convenience, but it's currently not populated
+automatically.  You can customize its use for your purposes.
+
 ## v0.1.0
 
 This first version of the module sets up the SQL injection rules that
