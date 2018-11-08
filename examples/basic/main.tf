@@ -1,6 +1,6 @@
 provider "aws" {
   region  = "us-east-1"
-  version = "~> 1.16.0"
+  version = "~> 1.30.0"
 }
 
 module "waf" {

@@ -1,3 +1,7 @@
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
 # The wafregional resources are for ALBs in an AWS region, if we just used *_waf_* resources it would be in effect for
 # Cloudfront
 
@@ -27,6 +31,14 @@ resource "aws_wafregional_web_acl" "app_acl" {
 
     priority = 2
     rule_id  = "${aws_wafregional_rule.byte-match-rule.id}"
+  }
+
+  rule {
+    action {
+      type = "BLOCK"
+    }
+    priority = 3
+    rule_id = "${aws_wafregional_rule.WAFIPRule.id}"
   }
 }
 
