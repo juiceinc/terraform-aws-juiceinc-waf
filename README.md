@@ -33,6 +33,12 @@ Thank you for contributing and thanks to Juice's very own Director of Engineerin
 
 # Releases
 
+## v0.2.1
+
+Updates the Lambda runtime for the WAFIPLambda from nodejs6.10 to nodejs8.10 since 6.10 is reaching end of life.
+Runs as is with no need to repackage or change any code.  Seems to run at least 50% faster than the 6.10 runtime in the
+few test runs I've made.
+
 ## v0.2.0
 
 Added the example available in the CloudFormation template that automatically updates known malicious IP addresses and 
