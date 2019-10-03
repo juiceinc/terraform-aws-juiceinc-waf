@@ -1,5 +1,5 @@
 resource "aws_iam_role" "WAFReputationUpdater" {
-  name               = "WAFReputationRole"
+  name               = "WAFReputationUpdater${var.env}"
   assume_role_policy = "${data.aws_iam_policy_document.WAFReputationAssumeRolePolicy.json}"
 }
 
@@ -82,7 +82,7 @@ data "aws_iam_policy_document" "WAFLambdaPermissions" {
 }
 
 resource "aws_iam_policy" "WAFPolicy" {
-  name   = "WAFUpdaterPolicy"
+  name   = "WAFUpdaterPolicy${var.env}"
   policy = "${data.aws_iam_policy_document.WAFLambdaPermissions.json}"
 }
 
