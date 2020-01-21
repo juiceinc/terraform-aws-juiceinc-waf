@@ -1,10 +1,10 @@
 resource "aws_lambda_function" "WAFIPLambda" {
   filename         = "${path.module}/WAFIPLambda.zip"
-  function_name    = "WAFIPLambda"
+  function_name    = "WAFIPLambda-${var.env}"
   role             = "${aws_iam_role.WAFReputationUpdater.arn}"
   handler          = "index.handler"
   source_code_hash = "${base64sha256(file("${path.module}/WAFIPLambda.zip"))}"
-  runtime          = "nodejs8.10"
+  runtime          = "${var.runtime}"
   timeout          = 300
 }
 
