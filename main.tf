@@ -6,7 +6,7 @@ data "aws_caller_identity" "current" {}
 # Cloudfront
 
 resource "aws_wafregional_web_acl" "app_acl" {
-  "default_action" {
+  default_action {
     type = "ALLOW"
   }
 
@@ -16,35 +16,35 @@ resource "aws_wafregional_web_acl" "app_acl" {
   # Here we attach all of the rules we've created to the ACL.  Lower priority values means they will be evaluated first.
   # Valid values for the type in the action block of the rule are: BLOCK, ALLOW, and COUNT.
   rule {
-    "action" {
-      type = "BLOCK"
+    action {
+      type = var.SQLI_ACTION
     }
 
     priority = 1
-    rule_id  = "${aws_wafregional_rule.sql-inj-rule.id}"
-  }
-
-  rule {
-    "action" {
-      type = "BLOCK"
-    }
-
-    priority = 2
-    rule_id  = "${aws_wafregional_rule.byte-match-rule.id}"
+    rule_id  = aws_wafregional_rule.sql-inj-rule.id
   }
 
   rule {
     action {
-      type = "BLOCK"
+      type = var.BYTE_MATCH_ACTION
+    }
+
+    priority = 2
+    rule_id  = aws_wafregional_rule.byte-match-rule.id
+  }
+
+  rule {
+    action {
+      type = var.IP_ACTION
     }
     priority = 3
-    rule_id = "${aws_wafregional_rule.WAFIPRule.id}"
+    rule_id = aws_wafregional_rule.WAFIPRule.id
   }
 }
 
 # Associate our WEB ACL with the ALB
 
 resource "aws_wafregional_web_acl_association" "alb-association" {
-  resource_arn = "${var.alb_arn}"
-  web_acl_id   = "${aws_wafregional_web_acl.app_acl.id}"
+  resource_arn = var.alb_arn
+  web_acl_id   = aws_wafregional_web_acl.app_acl.id
 }

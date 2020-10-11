@@ -20,7 +20,7 @@ resource "aws_wafregional_rule" "byte-match-rule" {
   metric_name = "bytematchrule${var.env}"
 
   predicate {
-    data_id = "${aws_wafregional_byte_match_set.byte-match-set.id}"
+    data_id = aws_wafregional_byte_match_set.byte-match-set.id
     negated = false
     type    = "ByteMatch"
   }

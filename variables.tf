@@ -13,3 +13,15 @@ variable "alb_arn" {
 variable "runtime"{
   default = "nodejs10.x"
 }
+
+variable "SQLI_ACTION" {
+  default = "BLOCK"
+}
+
+variable "BYTE_MATCH_ACTION" {
+  default = "BLOCK"
+}
+
+variable "IP_ACTION" {
+  default = "BLOCK"
+}

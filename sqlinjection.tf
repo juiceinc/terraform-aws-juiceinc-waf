@@ -105,7 +105,7 @@ resource "aws_wafregional_rule" "sql-inj-rule" {
   metric_name = "sqlinjrule${var.env}"
 
   predicate {
-    data_id = "${aws_wafregional_sql_injection_match_set.sqli-match-set.id}"
+    data_id = aws_wafregional_sql_injection_match_set.sqli-match-set.id
     negated = false
     type    = "SqlInjectionMatch"
   }

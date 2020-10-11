@@ -1,6 +1,6 @@
 resource "aws_iam_role" "WAFReputationUpdater" {
   name               = "WAFReputationUpdater${var.env}"
-  assume_role_policy = "${data.aws_iam_policy_document.WAFReputationAssumeRolePolicy.json}"
+  assume_role_policy = data.aws_iam_policy_document.WAFReputationAssumeRolePolicy.json
 }
 
 data "aws_iam_policy_document" "WAFReputationAssumeRolePolicy" {
@@ -54,8 +54,8 @@ data "aws_iam_policy_document" "WAFLambdaPermissions" {
     ]
 
     resources = [
-      "${aws_wafregional_ipset.WAFIPSet1.arn}",
-      "${aws_wafregional_ipset.WAFIPSet2.arn}"
+      aws_wafregional_ipset.WAFIPSet1.arn,
+      aws_wafregional_ipset.WAFIPSet2.arn
     ]
   }
 
@@ -83,18 +83,18 @@ data "aws_iam_policy_document" "WAFLambdaPermissions" {
 
 resource "aws_iam_policy" "WAFPolicy" {
   name   = "WAFUpdaterPolicy${var.env}"
-  policy = "${data.aws_iam_policy_document.WAFLambdaPermissions.json}"
+  policy = data.aws_iam_policy_document.WAFLambdaPermissions.json
 }
 
 resource "aws_iam_role_policy_attachment" "WAFPolicyAttachment" {
-  policy_arn = "${aws_iam_policy.WAFPolicy.arn}"
-  role       = "${aws_iam_role.WAFReputationUpdater.name}"
+  policy_arn = aws_iam_policy.WAFPolicy.arn
+  role       = aws_iam_role.WAFReputationUpdater.name
 }
 
 resource "aws_lambda_permission" "AllowInvokeFromCloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.WAFIPLambda.function_name}"
+  function_name = aws_lambda_function.WAFIPLambda.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.InvokeWAFIPLambda.arn}"
+  source_arn    = aws_cloudwatch_event_rule.InvokeWAFIPLambda.arn
 }
