@@ -1,16 +1,16 @@
 resource "aws_lambda_function" "WAFIPLambda" {
   filename         = "${path.module}/WAFIPLambda.zip"
   function_name    = "WAFIPLambda-${var.env}"
-  role             = "${aws_iam_role.WAFReputationUpdater.arn}"
+  role             = aws_iam_role.WAFReputationUpdater.arn
   handler          = "index.handler"
-  source_code_hash = "${base64sha256(file("${path.module}/WAFIPLambda.zip"))}"
-  runtime          = "${var.runtime}"
+  source_code_hash = base64sha256(filebase64("${path.module}/WAFIPLambda.zip"))
+  runtime          = var.runtime
   timeout          = 300
 }
 
 resource "aws_cloudwatch_event_target" "WAFIPUpdaterEventTarget" {
-  arn  = "${aws_lambda_function.WAFIPLambda.arn}"
-  rule = "${aws_cloudwatch_event_rule.InvokeWAFIPLambda.name}"
+  arn  = aws_lambda_function.WAFIPLambda.arn
+  rule = aws_cloudwatch_event_rule.InvokeWAFIPLambda.name
 
   input = <<EOF
 {
@@ -48,7 +48,7 @@ resource "aws_wafregional_ipset" "WAFIPWhiteList" {
 resource "aws_wafregional_ipset" "WAFIPSet1" {
   name = "IP Reputation Lists Set #1"
   lifecycle {
-    ignore_changes = ["ip_set_descriptor"]
+    ignore_changes = [ip_set_descriptor]
   }
   #Since the lambda dynamically updates the IPSets hourly, and we also don't want those values to necessarily be stored
   # in the state, we want to ignore ip_set_descriptor changes to avoid seeing any large diffs for IPs.
@@ -57,7 +57,7 @@ resource "aws_wafregional_ipset" "WAFIPSet1" {
 resource "aws_wafregional_ipset" "WAFIPSet2" {
   name = "IP Reputation Lists Set #2"
   lifecycle {
-    ignore_changes = ["ip_set_descriptor"]
+    ignore_changes = [ip_set_descriptor]
   }
 }
 
@@ -67,13 +67,13 @@ resource "aws_wafregional_rule" "WAFIPRule" {
 
   predicate {
     type    = "IPMatch"
-    data_id = "${aws_wafregional_ipset.WAFIPSet1.id}"
+    data_id = aws_wafregional_ipset.WAFIPSet1.id
     negated = false
   }
 
   predicate {
     type    = "IPMatch"
-    data_id = "${aws_wafregional_ipset.WAFIPSet2.id}"
+    data_id = aws_wafregional_ipset.WAFIPSet2.id
     negated = false
   }
 }
